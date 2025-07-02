@@ -1,0 +1,46 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment files
+.env
+venv/
+env/
+ENV/
+.venv/
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+
+# Flask stuff
+instance/
+.webassets-cache
+
+# Database files (if local SQLite used)
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# IDE / Editor specific
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Node modules (if you have node.js dependencies)
+node_modules/
+
+# Static files built by frontend tools (if applicable)
+dist/
+build/
+
+# Mac OS files
+.DS_Store
+
+# Windows thumbnail cache files
+Thumbs.db
