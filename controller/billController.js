@@ -71,8 +71,8 @@ if (rest.items || rest.gst_value) {
   const items = rest.items || existBill.items;
   const gst = rest.gst_value ?? existBill.gst_value;
 
-  const sub_total = items.reduce((sum, item) => sum + item.quantity * item.rate, 0);
-  const tax_amount = (sub_total * gst) / 100;
+  const sub_total = calculateItemsTotal(items)
+  const tax_amount =gst>0? (sub_total * gst) / 100: sub_total;
   const total_amount = sub_total + tax_amount;
 
   existBill.sub_total = sub_total;
@@ -113,10 +113,14 @@ export const listBill = async (req, res) => {
         }
       }
     }
-
+      if (req.user.role !== 'Owner') {
+    filter.createdBy = req.user._id;    
+  }
     const bills = await billSchema.find(filter).sort({ createdAt: -1 });
-
-    res.status(200).json({ bills });
+    if(!bills){
+       res.status(400).json({ message: "Failed to filter data",error:bills });
+    }
+    res.status(200).json({ data:bills });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
