@@ -4,50 +4,55 @@ import dotenv from "dotenv";
 import UserSchema from "../models/User.js";
 dotenv.config()
 export const Register = async (req, res) => {
-    const saltRound = 10;
-    let { firstName, lastName, email, mobile, password } = req.body;
-    let role = "Admin";
-    const randomNum = Math.floor(100 + Math.random() * 900);
-    let userName = `${firstName}${randomNum}`;
+    try {
+        const saltRound = 10;
+        let { firstName, lastName, email, mobile, password } = req.body;
+        let role = "Admin";
+        const randomNum = Math.floor(100 + Math.random() * 900);
+        let userName = `${firstName}${randomNum}`;
 
-    const validateMobile = (mobile) => {
-        const regex = /^[6-9]\d{9}$/;
-        return regex.test(mobile);
-    };
-    if (!validateMobile(mobile)) {
-        return res.status(400).json({
-            message: "Mobile number must be exactly 10 digits and start with 6, 7, 8, or 9"
+        const validateMobile = (mobile) => {
+            const regex = /^[6-9]\d{9}$/;
+            return regex.test(mobile);
+        };
+        if (!validateMobile(mobile)) {
+            return res.status(400).json({
+                message: "Mobile number must be exactly 10 digits and start with 6, 7, 8, or 9"
+            });
+        }
+        let exemail = await UserSchema.findOne({ email: email });
+        if (exemail) return res.status(400).json({ message: "Email already exists" });
+
+
+        bcrypt.hash(password, saltRound, async (err, hash) => {
+            if (err) {
+                return res.status(500).json({ message: "Error hashing password" });
+            }
+
+            try {
+
+
+                let register = await new UserSchema({
+                    userName: userName,
+                    firstName: firstName,
+                    lastName: lastName,
+                    mobile: mobile,
+                    email: email,
+                    password: hash,
+                    role: role
+
+                });
+
+                let usersave = await register.save();
+                res.status(201).json({ message: `${role} created successfully`, data: usersave });
+            } catch (error) {
+                res.status(400).json({ message: error.message });
+            }
         });
     }
-    let exemail = await UserSchema.findOne({ email: email });
-    if (exemail) return res.status(400).json({ message: "Email already exists" });
-
-
-    bcrypt.hash(password, saltRound, async (err, hash) => {
-        if (err) {
-            return res.status(500).json({ message: "Error hashing password" });
-        }
-
-        try {
-
-
-            let register = await new UserSchema({
-                userName: userName,
-                firstName: firstName,
-                lastName: lastName,
-                mobile: mobile,
-                email: email,
-                password: hash,
-                role: role
-
-            });
-
-            let usersave = await register.save();
-            res.status(201).json({ message: `${role} created successfully`, data: usersave });
-        } catch (error) {
-            res.status(400).json({ message: error.message });
-        }
-    });
+    catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 };
 
 

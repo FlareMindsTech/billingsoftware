@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import mongoose from "mongoose";
 import cors from 'cors';
 import user from "./routes/userRoute.js"
+import bill from "./routes/billRoute.js"
 const App=express();
 App.use(bodyParser.json())
 App.use(bodyParser.urlencoded({extended:true}))
@@ -10,6 +11,8 @@ App.use(bodyParser.text())
 
 App.use(cors());
 App.use('/api/user',user)
+App.use('/api/bill',bill)
+
 
 
 
