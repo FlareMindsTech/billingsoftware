@@ -7,6 +7,6 @@ const router=express.Router()
 
 router.post("/createbill",CreateNewBill)
 router.put("/updatebill",updateBill)
-router.put("/listbill",listBill)
+router.put("/listbill",Auth,listBill)
 
 export default router;  

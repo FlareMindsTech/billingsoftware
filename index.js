@@ -20,4 +20,4 @@ mongoose.connect('mongodb://127.0.0.1:27017/billingsoftware')
 .then(()=>console.log('db connected for billingsoftware'))
 .catch((e)=>console.log('error'))
 
-App.listen(5000,()=>{console.log("server is running on port 3000")})
+App.listen(5000,()=>{console.log("server is running on port 5000")})
