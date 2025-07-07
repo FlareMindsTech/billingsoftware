@@ -97,3 +97,31 @@ export const login = async (req, res) => {
         res.status(404).json({ message: "User not found" });
     }
 };
+
+
+export const listUser=async(req,res)=>{
+    try{
+         const filter = {};
+        
+            for (let key in req.body) {
+              if (req.body[key] !== undefined && req.body[key] !== "") {
+                // Case-insensitive match for customer_name, email
+                if (["userName", "firstName","lastName","email"].includes(key)) {
+                  filter[key] = { $regex: req.body[key], $options: "i" };
+                } else {
+                  filter[key] = req.body[key];
+                }
+              }
+            }         
+           
+         
+            const users = await UserSchema.find(filter).sort({ createdAt: -1 });
+            if(!users){
+               res.status(400).json({ message: "Failed to filter data",error:users });
+            }
+            res.status(200).json({ data:users });
+    }
+     catch(error) {
+        res.status(404).json({ message: "User not found" });
+    }
+}
