@@ -17,12 +17,12 @@ App.get("/", (req, res) => {
   res.send("welcome"); 
 });
 
-mongoose.connect('mongodb://127.0.0.1:27017/billingsoftware')
-.then(()=>console.log('db connected for billingsoftware'))
-.catch((e)=>console.log('error'))
+mongoose.connect('mongodb+srv://flaremindstech:flareminds%401308@cluster0.12wutsc.mongodb.net/billingsoftware?retryWrites=true&w=majority&appName=Cluster0')
+ .then(() => console.log('Connected to MongoDB Atlas...'))
+  .catch(err => console.error('Could not connect to MongoDB...'));
 
 const port = process.env.PORT || 7372;
 
 App.listen(port, () => {
   console.log("Server connected to " + port); 
-});
+});  
