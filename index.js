@@ -23,6 +23,6 @@ mongoose.connect('mongodb://127.0.0.1:27017/billingsoftware')
 
 const port = process.env.PORT || 7372;
 
-const server=App.listen(port, () => {
+App.listen(port, () => {
   console.log("Server connected to " + port); 
 });
