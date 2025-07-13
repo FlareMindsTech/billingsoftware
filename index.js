@@ -18,8 +18,8 @@ App.get("/", (req, res) => {
 });
 
 mongoose.connect('mongodb+srv://flaremindstech:flareminds%401308@cluster0.12wutsc.mongodb.net/billingsoftware?retryWrites=true&w=majority&appName=Cluster0')
- .then(() => console.log('Connected to MongoDB Atlas...'))
-  .catch(err => console.error('Could not connect to MongoDB...'));
+.then(() => console.log('Connected to MongoDB Atlas...'))
+.catch(err => console.error('Could not connect to MongoDB...'));
 
 const port = process.env.PORT || 7372;
 
