@@ -13,11 +13,16 @@ App.use(cors());
 App.use('/api/user',user)
 App.use('/api/bill',bill)
 
-
-
+App.get("/", (req, res) => {
+  res.send("welcome"); 
+});
 
 mongoose.connect('mongodb://127.0.0.1:27017/billingsoftware')
 .then(()=>console.log('db connected for billingsoftware'))
 .catch((e)=>console.log('error'))
 
-App.listen(5000,()=>{console.log("server is running on port 5000")})
+const port = process.env.PORT || 7372;
+
+const server=App.listen(port, () => {
+  console.log("Server connected to " + port); 
+});
