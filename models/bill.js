@@ -1,15 +1,16 @@
-
 import mongoose from "mongoose";
 import mongooseSequence from 'mongoose-sequence';
 
 const AutoIncrement = mongooseSequence(mongoose);
+
 const itemSchema = new mongoose.Schema({
     description: { type: String, required: true },
     quantity: { type: Number, required: true, min: 1 },
     rate: { type: Number, required: true, min: 0 },
-    amount: { type: Number, required: true, min: 0 }, // quantity * rate
+    amount: { type: Number, required: true, min: 0 } // quantity * rate
 });
-const billSchema = new mongoose.Schema(
+
+const BillSchema = new mongoose.Schema(
     {
         s_no: {
             type: Number,
@@ -22,19 +23,17 @@ const billSchema = new mongoose.Schema(
         customer_mobile: {
             type: String,
             required: true,
-            match: [/^\d{10}$/, "Mobile number must be exactly 10 digits"],
-
+            match: [/^\d{10}$/, "Mobile number must be exactly 10 digits"]
         },
         customer_email: {
             type: String,
             required: true,
-            match: [/\S+@\S+\.\S+/, "Please enter a valid email address"],
-
+            match: [/\S+@\S+\.\S+/, "Please enter a valid email address"]
         },
         items: {
             type: [itemSchema],
             required: true,
-            validate: [arr => arr.length > 0, "At least one item is required"],
+            validate: [arr => arr.length > 0, "At least one item is required"]
         },
         sub_total: {
             type: Number,
@@ -54,12 +53,20 @@ const billSchema = new mongoose.Schema(
         payment_status: {
             type: String,
             required: true,
-            enum: ["Paid", "Unpaid", "Partially Paid"],
+            enum: ["Paid", "Unpaid", "Partially Paid"]
         },
         payment_mode: {
             type: String,
             required: true,
-            enum: ["Cash", "Card", "UPI", "Bank Transfer", "Other"],
+            enum: ["Cash", "Card", "UPI", "Bank Transfer", "Other"]
+        },
+        paid_amount: {
+            type: Number,
+            default: 0
+        },
+        balance_amount: {
+            type: Number,
+            default: 0
         },
         remarks: {
             type: String
@@ -67,7 +74,7 @@ const billSchema = new mongoose.Schema(
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-            required: true,
+            required: true
         },
         invoice_number: {
             type: String,
@@ -81,8 +88,8 @@ const billSchema = new mongoose.Schema(
         gst_value: {
             type: Number,
             required: true,
-            default: 18, // common GST rate
-            enum: [0, 5, 12, 18, 28],
+            default: 18 ,
+            enum: [0, 5, 12, 18, 28]
         },
         sgst: {
             type: Number,
@@ -92,15 +99,16 @@ const billSchema = new mongoose.Schema(
             type: Number,
             default: 0
         }
-
     },
     {
-        timestamps: true,
+        timestamps: true
     }
 );
-billSchema.plugin(AutoIncrement, {
+
+BillSchema.plugin(AutoIncrement, {
     inc_field: 's_no',
-    id: 'bill_counter',   // optional: gives a unique name to the counter
-    start_seq: 1          // optional: starting number
+    id: 'bill_counter',
+    start_seq: 1
 });
-export default mongoose.model("Bill", billSchema);
+
+export default mongoose.model("Bill", BillSchema);

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice</title>
+  <style>
+    body {
+      font-family: 'Times New Roman', serif;
+      font-size: 12px;
+      color: black;
+    }
+    .header {
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .logo {
+      width: 60px;
+      margin: 10px auto;
+      display: block;
+    }
+    .company-info {
+      text-align: center;
+      font-size: 12px;
+      color: #000;
+      margin-bottom: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th {
+      background-color: #80c824;
+      color: white;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 6px;
+      text-align: left;
+    }
+    .footer {
+      margin-top: 40px;
+      text-align: right;
+      font-weight: bold;
+      color: #18b41f;
+    }
+  </style>
+</head>
+<body>
+  <img src=" class="logo" alt="Recycle Logo" />
+  <div class="header">CASH BILL</div>
+  <div class="company-info">
+    <strong>TRITECH SYSTEMS</strong><br>
+    All Kind Of Waste: Fabric, Paper, Polybag, Electrical & Electronic...<br>
+    17 A, Kumaran Colony, Ammapalayam, Tiruppur - 641654<br>
+    Cell No: 8940644004 | Email: tritechsysytems2011@gmail.com
+  </div>
+
+  <p><strong>To:</strong><br>
+  {{customer_name}}<br>
+  {{customer_address}}</p>
+
+  <p><strong>Date:</strong> {{date}}<br>
+  <strong>Po No:</strong> {{po_no}}<br>
+  <strong>Bill No:</strong> {{invoice_number}}<br>
+  <strong>Vehicle No:</strong> {{vehicle_no}}</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>S.No</th>
+        <th>Particulars</th>
+        <th>Qty</th>
+        <th>Rate</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{items_rows}}
+    </tbody>
+  </table>
+
+  <div style="text-align: right; margin-top: 20px;">
+    <p><strong>Total Amount:</strong> ₹{{total_amount}}</p>
+    <p><strong>Rupees:</strong> {{amount_in_words}}</p>
+  </div>
+
+  <div class="footer">
+    For TRITECH SYSTEMS<br><br>
+    PROPRIETOR
+  </div>
+</body>
+</html>

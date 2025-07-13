@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 import billSchema from "../models/bill.js"
+import { generateInvoicePDF } from "../utils/generateInvoice.js";
+import bill from "../models/bill.js";
+
 
 function calculateItemsTotal(items) {
   return items.reduce((total, item) => {
@@ -9,43 +12,71 @@ function calculateItemsTotal(items) {
 
 export const CreateNewBill = async (req, res) => {
   try {
-    let { customer_name, customer_mobile, customer_email, items, payment_status, payment_mode, remarks
-      , invoice_number, gst_value
+    let {
+      customer_name,
+      customer_mobile,
+      customer_email,
+      items,
+      payment_status,
+      payment_mode,
+      remarks,
+      invoice_number,
+      gst_value,
+      paid_amount
     } = req.body;
-    try {
-      const sub_total = calculateItemsTotal(items);
 
-      const tax_amount = gst_value > 0 ? (sub_total * gst_value) / 100 : sub_total
-      const total_amount = sub_total + tax_amount;
-      let createBill = new billSchema({
-        customer_name: customer_name,
-        customer_mobile: customer_mobile,
-        customer_email: customer_email,
-        items: items,
-        sub_total: sub_total,
-        tax_amount: tax_amount,
-        total_amount: total_amount,
-        payment_status: payment_status,
-        payment_mode: payment_mode,
-        remarks: remarks,
-        created_by: req.user._id,
-        invoice_number: invoice_number,
-        gst_value: gst_value,
-        sgst: gst_value / 2,
-        cgst: gst_value / 2
-      });
+    // 👇 Fix: ensure paid_amount is always a number
+    paid_amount = Number(paid_amount) || 0;
 
-      let newBill = await createBill.save();
-      res.status(201).json({ message: `Bill created successfully`, data: newBill });
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  }
+    // Calculate totals
+    items = items.map(item => ({
+      ...item,
+      quantity: Number(item.quantity),
+      rate: Number(item.rate),
+      amount: Number(item.quantity) * Number(item.rate)
+    }));
 
-  catch (error) {
+    const sub_total = items.reduce((sum, item) => sum + item.amount, 0);
+    const tax_amount = gst_value > 0 ? (sub_total * gst_value) / 100 : 0;
+    const total_amount = sub_total + tax_amount;
+    const balance_amount = total_amount - paid_amount;
+
+    const bills = new bill({
+      customer_name,
+      customer_mobile,
+      customer_email,
+      items,
+      sub_total,
+      tax_amount,
+      total_amount,
+      payment_status,
+      payment_mode,
+      remarks,
+      created_by: req.user._id, // from auth middleware
+      invoice_number,
+      gst_value,
+      sgst: gst_value / 2,
+      cgst: gst_value / 2,
+      paid_amount,
+      balance_amount
+    });
+
+    const savedBill = await bills.save();
+
+    // Generate and store the PDF
+   const pdfPath = await generateInvoicePDF(savedBill); 
+
+
+    res.status(201).json({
+      message: 'Bill created successfully',
+      data: savedBill,
+      invoice_pdf_path: pdfPath
+    });
+  } catch (error) {
     res.status(400).json({ message: error.message });
   }
-}
+};
+
 
 export const updateBill = async (req, res) => {
   try {
